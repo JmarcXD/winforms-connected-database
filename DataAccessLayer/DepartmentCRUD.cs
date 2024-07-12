@@ -1,4 +1,5 @@
 ﻿using DataBaseWinforms.Entities;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
@@ -16,27 +17,35 @@ namespace DataBaseWinforms.DataAccessLayer
 
         public List<Department> GetDepartmentListFromDB()
         {
-            _connection.Open();
             List<Department> departments = new List<Department>();
 
-            string query = "SELECT * FROM departments;";
-            SqlCommand cmd = new SqlCommand(query, _connection);
-
-            // Recuperamos un lector...
-            SqlDataReader records = cmd.ExecuteReader();
-
-            while (records.Read())
+            try
             {
-                Department department = new Department();
+                _connection.Open();
 
-                department.Department_id = records.GetInt32(records.GetOrdinal("department_id"));
-                department.Department_name = records.GetString(records.GetOrdinal("department_name"));
-                department.Location_id = records.GetInt32(records.GetOrdinal("location_id"));
-         
+                string query = "SELECT * FROM departments;";
+                SqlCommand cmd = new SqlCommand(query, _connection);
 
-                departments.Add(department);
+                // Recuperamos un lector...
+                SqlDataReader records = cmd.ExecuteReader();
+
+                while (records.Read())
+                {
+                    Department department = new Department();
+
+                    department.Department_id = records.GetInt32(records.GetOrdinal("department_id"));
+                    department.Department_name = records.GetString(records.GetOrdinal("department_name"));
+                    department.Location_id = records.GetInt32(records.GetOrdinal("location_id"));
+
+
+                    departments.Add(department);
+                }
+                _connection.Close();
             }
-            _connection.Close();
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
 
             return departments;
         }
