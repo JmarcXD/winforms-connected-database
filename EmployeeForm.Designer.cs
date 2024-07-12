@@ -184,7 +184,7 @@
             this.salaryEmployeeNUD.Size = new System.Drawing.Size(280, 31);
             this.salaryEmployeeNUD.TabIndex = 19;
             this.salaryEmployeeNUD.Value = new decimal(new int[] {
-            300,
+            400,
             0,
             0,
             0});

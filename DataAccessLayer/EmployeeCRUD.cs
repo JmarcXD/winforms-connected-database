@@ -1,4 +1,4 @@
-﻿using DataBaseWinforms.Entities;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
@@ -33,10 +33,10 @@ namespace DataBaseWinforms
                 employee.First_name =    records.GetString(records.GetOrdinal("first_name"));
                 employee.Last_name =     records.GetString(records.GetOrdinal("last_name"));
                 employee.Email =         records.GetString(records.GetOrdinal("email"));
-                employee.Phone_number =  records.IsDBNull(records.GetOrdinal("phone_number")) ? "" : records.GetString(records.GetOrdinal("phone_number"));
-                employee.Salary =        records.IsDBNull(records.GetOrdinal("salary")) ? 0m : records.GetDecimal(records.GetOrdinal("salary"));
-                employee.Manager_id =    records.IsDBNull(records.GetOrdinal("manager_id")) ? 0 : records.GetInt32(records.GetOrdinal("manager_id"));
-                employee.Department_id = records.IsDBNull(records.GetOrdinal("department_id")) ? 0 : records.GetInt32(records.GetOrdinal("department_id"));
+                employee.Phone_number =  records.IsDBNull(records.GetOrdinal("phone_number")) ? (string)null : records.GetString(records.GetOrdinal("phone_number"));
+                employee.Salary =        records.IsDBNull(records.GetOrdinal("salary")) ? (decimal?)null : records.GetDecimal(records.GetOrdinal("salary"));
+                employee.Manager_id =    records.IsDBNull(records.GetOrdinal("manager_id")) ? (int?)null : records.GetInt32(records.GetOrdinal("manager_id"));
+                employee.Department_id = records.IsDBNull(records.GetOrdinal("department_id")) ? (int?)null : records.GetInt32(records.GetOrdinal("department_id"));
 
 
                 employees.Add(employee);
@@ -75,12 +75,12 @@ namespace DataBaseWinforms
                 cmd.Parameters.AddWithValue("@FirstName", newEmployee.First_name);
                 cmd.Parameters.AddWithValue("@LastName", newEmployee.Last_name);
                 cmd.Parameters.AddWithValue("@Email", newEmployee.Email);
-                cmd.Parameters.AddWithValue("@PhoneNumber", newEmployee.Phone_number);
+                cmd.Parameters.AddWithValue("@PhoneNumber", string.IsNullOrWhiteSpace(newEmployee.Phone_number) ? (object)DBNull.Value: newEmployee.Phone_number);
                 cmd.Parameters.AddWithValue("@HireDate", newEmployee.Hire_date);
                 cmd.Parameters.AddWithValue("@JobId", newEmployee.Job_id);
                 cmd.Parameters.AddWithValue("@Salary", newEmployee.Salary);
-                cmd.Parameters.AddWithValue("@ManagerId", newEmployee.Manager_id);
-                cmd.Parameters.AddWithValue("@DepartmentId", newEmployee.Department_id);
+                cmd.Parameters.AddWithValue("@ManagerId", (object)newEmployee.Manager_id ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@DepartmentId", (object)newEmployee.Department_id ?? DBNull.Value);
 
                 cmd.ExecuteNonQuery();
             }

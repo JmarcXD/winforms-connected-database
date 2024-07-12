@@ -34,9 +34,10 @@ namespace DataBaseWinforms
                 this._employeeService.InsertEmployee(this.nameEmployeeTB.Text, this.lastNameEmployeeTB.Text,
                                                     this.emailEmployeeTB.Text, this.phoneNumberEmployeeTB.Text,
                                                     this.hireDateEmployeeDP.Text, (int)jobSelected.Value,
-                                                    (decimal)this.salaryEmployeeNUD.Value, (int)managerSelected.Value,
-                                                    (int)departmentSelected.Value);
+                                                    (decimal)this.salaryEmployeeNUD.Value, (int?)managerSelected.Value,
+                                                    (int?)departmentSelected.Value);
                 MessageBox.Show("Se ha registrado el nuevo empleado!");
+                ClearForm(this);
             }
         }
 
@@ -57,13 +58,27 @@ namespace DataBaseWinforms
                 MessageBox.Show("Introduce el correo del empleado");
                 return false;
             }
-            else if (string.IsNullOrWhiteSpace(this.phoneNumberEmployeeTB.Text))
-            {
-                MessageBox.Show("Introduce el numero de telefono del empleado");
-                return false;
-            }
             else
                 return true;
+        }
+
+        public void ClearForm(Control parent)
+        {
+            foreach (Control control in parent.Controls)
+            {
+                if (control is TextBox)
+                {
+                    ((TextBox)control).Clear();
+                }
+                else if (control is DateTimePicker)
+                {
+                    ((DateTimePicker)control).Value = DateTime.Now;
+                }
+                else if (control.HasChildren)
+                {
+                    ClearForm(control);
+                }
+            }
         }
 
         private void ListJobs_Load(object sender, EventArgs e)
@@ -87,6 +102,8 @@ namespace DataBaseWinforms
 
             List<ComboBoxItem> items = new List<ComboBoxItem>();
 
+            items.Add(new ComboBoxItem(null, null));
+
             foreach (Department d in _departmentService.GetDepartmentList())
             {
                 items.Add(new ComboBoxItem(d.Department_id, $"{d.Department_name}"));
@@ -102,6 +119,8 @@ namespace DataBaseWinforms
         {
 
             List<ComboBoxItem> items = new List<ComboBoxItem>();
+
+            items.Add(new ComboBoxItem(null, null));
 
             foreach (Employee d in _employeeService.GetEmployeeList())
             {
